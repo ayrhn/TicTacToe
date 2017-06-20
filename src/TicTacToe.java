@@ -11,6 +11,8 @@ import javafx.stage.Stage;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
 
+import java.util.ArrayList;
+
 
 /**
  * Created by Raihan on 20/06/2017.
@@ -20,7 +22,8 @@ public class TicTacToe extends Application {
 
     private boolean playable = true;
     private boolean turnX = true;
-
+    private ArrayList<Combos> combos = new ArrayList<>();
+    private Tile[][] board = new Tile[3][3];
     private Parent createContent() {
         Pane root = new Pane();
         root.setPrefSize(600, 600);
@@ -31,9 +34,23 @@ public class TicTacToe extends Application {
                 tile.setTranslateX(j * 200);
                 tile.setTranslateY(i * 200);
                 root.getChildren().add(tile);
+
+                board[j][i] = tile;
             }
         }
 
+        for (int y = 0; y < 3; y++) { //horizontal
+            combos.add(new Combos(board[0][y], board[1][y], board[2][y]));
+        }
+
+        for (int x = 0; x < 3; x++) { //vertical
+            combos.add(new Combos(board[x][0], board[x][1], board[x][2]));
+        }
+
+        for (int z = 0; z < 3; z++) { // diagonal
+            combos.add(new Combos(board[0][0], board[1][1], board[2][2]));
+            combos.add(new Combos(board[2][0], board[1][1], board[0][2]));
+        }
         return root;
     }
 
@@ -43,8 +60,27 @@ public class TicTacToe extends Application {
         primaryStage.show();
     }
 
-    private void checkState() {
-        
+    private void checkState() { //Checks if someone has won or not
+        for (Combos combo : combos) {
+            if (combo.isComplete()) {
+                playable = false;
+                break;
+            }
+        }
+    }
+
+    private class Combos {
+        private Tile[] tiles;
+        public Combos(Tile... tiles) {
+            this.tiles = tiles;
+        }
+
+        public boolean isComplete() {
+            if (tiles[0].getValue().isEmpty()) {
+                return false;
+            }
+            return tiles[0].getValue().equals(tiles[1].getValue()) && tiles[0].getValue().equals(tiles[2].getValue());
+        }
     }
 
     private class Tile extends StackPane {
@@ -82,6 +118,10 @@ public class TicTacToe extends Application {
                     checkState();
                 }
             });
+        }
+
+        public String getValue() {
+            return text.getText();
         }
 
         private void drawX() { // For Crosses
