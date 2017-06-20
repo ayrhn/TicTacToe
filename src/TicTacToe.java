@@ -2,18 +2,24 @@ import javafx.application.Application;
 import javafx.geometry.Pos;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.input.MouseButton;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.StackPane;
+import javafx.scene.text.Font;
+import javafx.scene.text.Text;
 import javafx.stage.Stage;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
 
-import java.awt.*;
 
 /**
  * Created by Raihan on 20/06/2017.
+ * TicTacToe Game using JavaFX
  */
 public class TicTacToe extends Application {
+
+    private boolean playable = true;
+    private boolean turnX = true;
 
     private Parent createContent() {
         Pane root = new Pane();
@@ -37,13 +43,53 @@ public class TicTacToe extends Application {
         primaryStage.show();
     }
 
+    private void checkState() {
+        
+    }
+
     private class Tile extends StackPane {
+
+        private Text text = new Text();
+
+
         public Tile() {
             Rectangle border = new Rectangle(200, 200); //Gives a 3x3 square
             border.setFill(null);
             border.setStroke(Color.BLACK);
             setAlignment(Pos.CENTER);
-            getChildren().addAll(border);
+            getChildren().addAll(border, text);
+
+            text.setFont(Font.font(72));
+
+            setOnMouseClicked(event -> {
+                if (!playable) {
+                    return;
+                }
+                if (event.getButton() == MouseButton.PRIMARY) {
+                    if (!turnX) {
+                        return;
+                    }
+                    drawX();
+                    turnX = false;
+                    checkState();
+                }
+                else if (event.getButton() == MouseButton.SECONDARY) {
+                    if (turnX) {
+                        return;
+                    }
+                    drawO();
+                    turnX = true;
+                    checkState();
+                }
+            });
+        }
+
+        private void drawX() { // For Crosses
+            text.setText("X");
+        }
+
+        private void drawO() { // For Naughts
+            text.setText("O");
         }
     }
 
