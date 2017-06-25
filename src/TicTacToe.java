@@ -1,3 +1,6 @@
+import javafx.animation.KeyFrame;
+import javafx.animation.KeyValue;
+import javafx.animation.Timeline;
 import javafx.application.Application;
 import javafx.geometry.Pos;
 import javafx.scene.Parent;
@@ -5,11 +8,13 @@ import javafx.scene.Scene;
 import javafx.scene.input.MouseButton;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.StackPane;
+import javafx.scene.shape.Line;
 import javafx.scene.text.Font;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
+import javafx.util.Duration;
 
 import java.util.ArrayList;
 
@@ -24,8 +29,10 @@ public class TicTacToe extends Application {
     private boolean turnX = true;
     private ArrayList<Combos> combos = new ArrayList<>();
     private Tile[][] board = new Tile[3][3];
+    private Pane root = new Pane();
+
     private Parent createContent() {
-        Pane root = new Pane();
+
         root.setPrefSize(600, 600);
 
         for (int i = 0; i < 3; i++) {
@@ -64,9 +71,28 @@ public class TicTacToe extends Application {
         for (Combos combo : combos) {
             if (combo.isComplete()) {
                 playable = false;
+                endGame(combo);
                 break;
             }
         }
+    }
+
+    private void endGame(Combos combo) { //Creates a cross
+        //TODO: Reset game
+        Line line = new Line();
+        line.setStartX(combo.tiles[0].getCentreX());
+        line.setStartY(combo.tiles[0].getCentreY());
+        line.setEndX(combo.tiles[0].getCentreY());
+        line.setEndY(combo.tiles[0].getCentreX());
+
+        root.getChildren().add(line);
+
+        Timeline tl = new Timeline();
+        tl.getKeyFrames().add(new KeyFrame(Duration.seconds(0.5),
+                new KeyValue(line.endXProperty(), combo.tiles[2].getCentreX()),
+                new KeyValue(line.endYProperty(), combo.tiles[2].getCentreY())));
+        tl.play();
+
     }
 
     private class Combos {
@@ -118,6 +144,14 @@ public class TicTacToe extends Application {
                     checkState();
                 }
             });
+        }
+
+        public double getCentreX() {
+            return getTranslateX() + 100;
+        }
+
+        public double getCentreY() {
+            return getTranslateY() + 100;
         }
 
         public String getValue() {
