@@ -128,20 +128,17 @@ public class TicTacToe extends Application {
                     return;
                 }
                 if (event.getButton() == MouseButton.PRIMARY) {
-                    if (!turnX) {
-                        return;
-                    }
-                    drawX();
-                    turnX = false;
-                    checkState();
-                }
-                else if (event.getButton() == MouseButton.SECONDARY) {
+
                     if (turnX) {
-                        return;
+                        drawX();
+                        turnX = false;
+                        checkState();
                     }
-                    drawO();
-                    turnX = true;
-                    checkState();
+                    else {
+                        drawO();
+                        turnX = true;
+                        checkState();
+                    }
                 }
             });
         }
