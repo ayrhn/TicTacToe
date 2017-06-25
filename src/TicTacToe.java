@@ -92,7 +92,7 @@ public class TicTacToe extends Application {
                 new KeyValue(line.endXProperty(), combo.tiles[2].getCentreX()),
                 new KeyValue(line.endYProperty(), combo.tiles[2].getCentreY())));
         tl.play();
-
+        
     }
 
     private class Combos {
